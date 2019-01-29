@@ -33,7 +33,7 @@
 # https://devtalk.nvidia.com/default/topic/1014424/jetson-tx2/identifying-tx1-and-tx2-at-runtime/
 # https://devtalk.nvidia.com/default/topic/996988/jetson-tk1/chip-uid/post/5100481/#5100481
 
-declare -r tegra_chip_id=${tegra_chip_id}
+declare -r tegra_chip_id=/sys/module/tegra_fuse/parameters/tegra_chip_id
 if [ -f ${tegra_chip_id} ]; then
     case $(cat ${tegra_chip_id}) in
         64)
@@ -47,11 +47,10 @@ if [ -f ${tegra_chip_id} ]; then
         *)
             JETSON_BOARD="UNKNOWN" ;;
     esac
-    JETSON_DESCRIPTION="NVIDIA Jetson $JETSON_BOARD"
+    JETSON_BOARD="NVIDIA Jetson $JETSON_BOARD"
 else
-    JETSON_DESCRIPTION="UNKNOWN (missing ${tegra_chip_id})"
+    JETSON_BOARD="UNKNOWN (missing ${tegra_chip_id})"
 fi
-export JETSON_BOARD
 
 # NVIDIA Jetson version
 # reference https://devtalk.nvidia.com/default/topic/860092/jetson-tk1/how-do-i-know-what-version-of-l4t-my-jetson-tk1-is-running-/
@@ -165,6 +164,7 @@ export JETSON_BOARD
 export JETSON_CUDA
 export JETSON_JETPACK
 export JETSON_L4T
+export JETSON_OPENCV
 
 # TODO Add enviroments variables:
 # - UID -> https://devtalk.nvidia.com/default/topic/996988/jetson-tk1/chip-uid/post/5100481/#5100481
