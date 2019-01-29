@@ -33,8 +33,9 @@
 # https://devtalk.nvidia.com/default/topic/1014424/jetson-tx2/identifying-tx1-and-tx2-at-runtime/
 # https://devtalk.nvidia.com/default/topic/996988/jetson-tk1/chip-uid/post/5100481/#5100481
 
-if [ -f /sys/module/tegra_fuse/parameters/tegra_chip_id ]; then
-    case $(cat /sys/module/tegra_fuse/parameters/tegra_chip_id) in
+declare -r tegra_chip_id=${tegra_chip_id}
+if [ -f ${tegra_chip_id} ]; then
+    case $(cat ${tegra_chip_id}) in
         64)
             JETSON_BOARD="TK1" ;;
         33)
@@ -47,14 +48,17 @@ if [ -f /sys/module/tegra_fuse/parameters/tegra_chip_id ]; then
             JETSON_BOARD="UNKNOWN" ;;
     esac
     JETSON_DESCRIPTION="NVIDIA Jetson $JETSON_BOARD"
+else
+    JETSON_DESCRIPTION="UNKNOWN (missing ${tegra_chip_id})"
 fi
 export JETSON_BOARD
 
 # NVIDIA Jetson version
 # reference https://devtalk.nvidia.com/default/topic/860092/jetson-tk1/how-do-i-know-what-version-of-l4t-my-jetson-tk1-is-running-/
-if [ -f /etc/nv_tegra_release ]; then
+declare -r nv_tegra_release=/etc/nv_tegra_release
+if [ -f ${nv_tegra_release} ]; then
     # L4T string
-    JETSON_L4T_STRING=$(head -n 1 /etc/nv_tegra_release)
+    JETSON_L4T_STRING=$(head -n 1 ${nv_tegra_release})
 
     # Load release and revision
     JETSON_L4T_RELEASE=$(echo $JETSON_L4T_STRING | cut -f 1 -d ',' | sed 's/\# R//g' | cut -d ' ' -f1)
@@ -138,6 +142,8 @@ if [ -f /etc/nv_tegra_release ]; then
         # Unknown board
         JETSON_JETPACK="UNKNOWN"
     fi
+else
+    JETSON_JETPACK="UNKNOWN (missing ${nv_tegra_release})"
 fi
 
 # Read CUDA version
