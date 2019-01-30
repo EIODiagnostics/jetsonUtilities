@@ -60,8 +60,8 @@ if [ -f ${nv_tegra_release} ]; then
     JETSON_L4T_STRING=$(head -n 1 ${nv_tegra_release})
 
     # Load release and revision
-    JETSON_L4T_RELEASE=$(echo $JETSON_L4T_STRING | cut -f 1 -d ',' | sed 's/\# R//g' | cut -d ' ' -f1)
-    JETSON_L4T_REVISION=$(echo $JETSON_L4T_STRING | cut -f 2 -d ',' | sed 's/\ REVISION: //g' )
+    JETSON_L4T_RELEASE=$(echo "$JETSON_L4T_STRING" | cut -f 1 -d ',' | sed 's/\# R//g' | cut -d ' ' -f1)
+    JETSON_L4T_REVISION=$(echo "$JETSON_L4T_STRING" | cut -f 2 -d ',' | sed 's/\ REVISION: //g' )
     # unset variable
     unset JETSON_L4T_STRING
     
@@ -70,7 +70,7 @@ if [ -f ${nv_tegra_release} ]; then
 
     # Write version of jetpack installed
     # https://developer.nvidia.com/embedded/jetpack-archive
-    if [ "$JETSON_BOARD" = "AGX Xavier" ] ; then 
+    if [ "$JETSON_BOARD" = "NVIDIA Jetson AGX Xavier" ] ; then 
         case $JETSON_L4T in
             "31.0.1")
                     JETSON_JETPACK="4.0 DP" ;;
@@ -81,20 +81,20 @@ if [ -f ${nv_tegra_release} ]; then
             *)
                JETSON_JETPACK="UNKNOWN" ;;
         esac        
-    elif [ "$JETSON_BOARD" = "TX2i" ] ; then 
+    elif [ "$JETSON_BOARD" = "NVIDIA Jetson TX2i" ] ; then 
         case $JETSON_L4T in
             "28.2.1")
                     JETSON_JETPACK="3.3 or 3.2.1" ;;
-            "28.2") 
-               JETSON_JETPACK="3.2" ;;
+            "28.2"|"28.2.0") 
+                    JETSON_JETPACK="3.2" ;;
             *)
                JETSON_JETPACK="UNKNOWN" ;;
         esac        
-    elif [ "$JETSON_BOARD" = "TX2" ] ; then
-        case $JETSON_L4T in
+    elif [ "$JETSON_BOARD" = "NVIDIA Jetson TX2" ] ; then
+        case $JETSON_L4T in                
             "28.2.1")
                     JETSON_JETPACK="3.3 or 3.2.1" ;;
-            "28.2") 
+            "28.2"|"28.2.0") 
                     JETSON_JETPACK="3.2" ;;
             "28.1") 
                     JETSON_JETPACK="3.1" ;;
@@ -103,7 +103,7 @@ if [ -f ${nv_tegra_release} ]; then
             *)
                JETSON_JETPACK="UNKNOWN" ;;
         esac
-    elif [ "$JETSON_BOARD" = "TX1" ] ; then
+    elif [ "$JETSON_BOARD" = "NVIDIA Jetson TX1" ] ; then
         case $JETSON_L4T in
             "28.2.0")
                     JETSON_JETPACK="3.3" ;;
@@ -124,7 +124,7 @@ if [ -f ${nv_tegra_release} ]; then
             *)
                JETSON_JETPACK="UNKNOWN" ;;
         esac
-    elif [ "$JETSON_BOARD" ="TK1" ] ; then
+    elif [ "$JETSON_BOARD" = "NVIDIA Jetson TK1" ] ; then
         case $JETSON_L4T in
             "21.5") 
                     JETSON_JETPACK="2.3.1 or 2.3" ;;
@@ -147,7 +147,7 @@ fi
 
 # Read CUDA version
 if [ -f /usr/local/cuda/version.txt ]; then
-    JETSON_CUDA=$(cat /usr/local/cuda/version.txt | sed 's/\CUDA Version //g')
+    JETSON_CUDA=$(sed 's/\CUDA Version //g' /usr/local/cuda/version.txt)
 else
     JETSON_CUDA="NOT INSTALLED"
 fi
